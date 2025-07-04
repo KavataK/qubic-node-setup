@@ -49,7 +49,7 @@ services:
       - "traefik.http.middlewares.cors-events.headers.accesscontrolalloworiginlist=*"
       - "traefik.http.middlewares.cors-events.headers.accesscontrolmaxage=300"
       - "traefik.http.middlewares.cors-events.headers.addvaryheader=true"
-      - "traefik.http.middlewares.customheaders.headers.customresponseheaders.X-Server-Name=dev01"
+      - "traefik.http.middlewares.customheaders.headers.customresponseheaders.X-Server-Name=test01"
       ## Service
       - "traefik.http.services.qubic-events.loadbalancer.server.port=8000"
     environment:
@@ -64,7 +64,7 @@ services:
       - traefik
     restart: always
   qubic-archiver:
-    image: ghcr.io/qubic/qubic-archiver:v0.10.1
+    image: ghcr.io/qubic/qubic-archiver:v0.11.1
     container_name: qubic-archiver
     labels:
       # Traefik
@@ -107,7 +107,7 @@ services:
         condition: service_healthy
     restart: always
   qubic-nodes:
-    image: ghcr.io/qubic/qubic-nodes:v2.0.1
+    image: ghcr.io/qubic/qubic-nodes:v2.1.0
     container_name: qubic-nodes
     ports:
       - "127.0.0.1:8080:8080"
@@ -143,6 +143,65 @@ services:
       - "--providers.docker.watch"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+    restart: always
+  mongo:
+    image: mongo
+    container_name: "mongo-db"
+    restart: unless-stopped
+    volumes:
+      - ./mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "qubic"
+      MONGO_INITDB_ROOT_PASSWORD: "password"
+    ports:
+      - "127.0.0.1:27017:27017"
+    networks:
+      - traefik
+  processor:
+    image: ghcr.io/qubic/qubic-stats-processor:hackathon-fix
+    container_name: "stats-processor"
+    environment:
+      QUBIC_STATS_PROCESSOR_MONGO_USERNAME: "qubic"
+      QUBIC_STATS_PROCESSOR_MONGO_PASSWORD: "password"
+      QUBIC_STATS_PROCESSOR_MONGO_HOSTNAME: "mongo"
+      QUBIC_STATS_PROCESSOR_SERVICE_ARCHIVER_GRPC_ADDRESS: "qubic-archiver:8001"
+    networks:
+      - traefik
+    depends_on:
+      - mongo
+      - qubic-archiver
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+  stats-api:
+    image: ghcr.io/qubic/qubic-stats-api:hackathon-fix
+    container_name: "stats-api"
+    environment:
+      QUBIC_STATS_API_MONGO_USERNAME: "qubic"
+      QUBIC_STATS_API_MONGO_PASSWORD: "password"
+      QUBIC_STATS_API_MONGO_HOSTNAME: "mongo"
+      QUBIC_STATS_API_SERVICE_HTTP_ADDRESS: "0.0.0.0:8090"
+      QUBIC_STATS_API_POOL_NODE_FETCHER_URL: "http://qubic-nodes:8080/status"
+      QUBIC_STATS_API_POOL_NODE_PORT: 31841
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.stats-api.rule=PathPrefix(`/v1/latest-stats`) || PathPrefix(`/v1/rich-list`) || PathPrefix(`/v1/issuers`)"
+      - "traefik.http.routers.stats-api.priority=1000"
+      - "traefik.http.routers.stats-api.middlewares=cors-stats, stats-customheaders"
+      - "traefik.http.middlewares.cors-stats.headers.accesscontrolallowmethods=*"
+      - "traefik.http.middlewares.cors-stats.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.cors-stats.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.cors-stats.headers.accesscontrolmaxage=300"
+      - "traefik.http.middlewares.cors-stats.headers.addvaryheader=true"
+      - "traefik.http.middlewares.stats-customheaders.headers.customresponseheaders.X-Server-Name=test01"
+      - "traefik.http.routers.stats-api.entrypoints=web"
+      - "traefik.http.services.stats-api.loadbalancer.server.port=8090"
+    networks:
+      - traefik
+    ports:
+      - "127.0.0.1:8090:8090"
+    depends_on:
+      - mongo
     restart: always
 networks:
   traefik:

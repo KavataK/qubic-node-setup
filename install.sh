@@ -98,11 +98,15 @@ cp "$PROJECT_ROOT/cleanup.sh" /root/qubic/qubic_docker/
 cp "$PROJECT_ROOT/deploy.sh" /root/qubic/qubic_docker/
 cp "$PROJECT_ROOT/qubic-cli" /root/qubic/qubic_docker/
 cp "$PROJECT_ROOT/docker-compose.yaml" /root/qubic/qubic_docker/
+mkdir -p /root/qubic/qubic_docker/spectrumData/
+cp "$PROJECT_ROOT/qubic-stats-processor" /root/qubic/qubic_docker/spectrumData/
+cp "$PROJECT_ROOT/setupSpectrumData.sh" /root/qubic/qubic_docker/spectrumData/
+cp /root/qubic/filesForVHD/spectrum.158 /root/qubic/qubic_docker/spectrumData/
 
 # === Step 13: Patch docker-compose.yaml with current IP ===
 echo_info "Updating docker-compose.yaml with server IP..."
 server_ip=$(hostname -I | awk '{print $1}')
-sed -i 's|^\(\s*QUBIC_EVENTS_POOL_NODE_PASSCODES:\s*"\).*|\1'"$IP_SERVER"':AAAAAAAAAAEAAAAAAAAAAgAAAAAAAAADAAAAAAAAAAQ="|' /root/qubic/qubic_docker/docker-compose.yaml
+sed -i 's|^\(\s*QUBIC_EVENTS_POOL_NODE_PASSCODES:\s*"\).*|\1'"$server_ip"':AAAAAAAAAAEAAAAAAAAAAgAAAAAAAAADAAAAAAAAAAQ="|' /root/qubic/qubic_docker/docker-compose.yaml
 sed -i "s/\"IP\"/\"$server_ip\"/" /root/qubic/qubic_docker/docker-compose.yaml
 
 # === Step 14: Set permissions ===

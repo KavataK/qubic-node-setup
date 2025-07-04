@@ -77,6 +77,7 @@ echo "Qubic.efi compilation completed."
 echo "Starting Docker container..."
 cd /root/qubic/qubic_docker || exit 1
 rm -r /root/qubic/qubic_docker/store
+rm -r /root/qubic/qubic_docker/mongo-data 
 script -qc "./run.sh --epoch $EPOCH_VALUE --vhd /root/qubic/qubic.vhd --port 31841 --memory 116243 --cpus 14 --efi /root/qubic/qubic-efi-cross-build/Qubic.efi" /dev/null &
 
 sleep 2
@@ -89,11 +90,13 @@ python3 broadcaster.py
 nohup python3 epoch_switcher.py > /root/qubic/scripts/epoch_switcher.log 2>&1 &
 
 # Step 5: Start Docker Compose services for qubic-http and qubic-nodes
+
 cd /root/qubic/qubic_docker/ || exit 1
 export HOST_IP=$(hostname -I | awk '{print $1}')
 echo "HOST_IP=$HOST_IP" > .env
 docker-compose up -d
-
+cd /root/qubic/qubic_docker/spectrumData || exit 1
+nohup ./setupSpectrumData.sh --epoch $EPOCH_VALUE > spectrum_setup.log 2>&1 &
 sleep 5
 
 # Get the local IP address
@@ -104,6 +107,7 @@ echo "==========================================================================
 echo "Deployment completed successfully."
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "RPC is available at: http://$IP:8000/v1/tick-info"
+echo "The Qubic Stats API: http://185.130.226.46:8000/v1/latest-stats"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "To connect to the testnet via qubic-cli, use:"
 echo "_______________________"
