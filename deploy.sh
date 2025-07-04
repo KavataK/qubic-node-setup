@@ -107,7 +107,7 @@ echo "==========================================================================
 echo "Deployment completed successfully."
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "RPC is available at: http://$IP:8000/v1/tick-info"
-echo "The Qubic Stats API: http://185.130.226.46:8000/v1/latest-stats"
+echo "The Qubic Stats API: http://$IP:8000/v1/latest-stats"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "To connect to the testnet via qubic-cli, use:"
 echo "_______________________"
