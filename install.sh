@@ -11,7 +11,7 @@ PROJECT_ROOT="$(dirname "$(realpath "$0")")"
 
 # Update packages and install pip & gdown
 sudo apt update -y && \
-sudo apt install -y python3-pip unzip && \
+sudo apt install -y python3-pip unzip tree && \
 pip3 install gdown
 
 # === Step 1: Create main project directory ===
