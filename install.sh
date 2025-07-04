@@ -10,8 +10,8 @@ echo_info() {
 PROJECT_ROOT="$(dirname "$(realpath "$0")")"
 
 # Update packages and install pip & gdown
-apt update -y
-apt install -y python3-pip
+sudo apt update -y && \
+sudo apt install -y python3-pip unzip && \
 pip3 install gdown
 
 # === Step 1: Create main project directory ===
