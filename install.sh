@@ -91,6 +91,7 @@ echo_info "Placing configuration files..."
 cp "$PROJECT_ROOT/config.yaml" /root/qubic/qubic-efi-cross-build/
 cp "$PROJECT_ROOT/seeds.txt" /root/qubic/qubic-efi-cross-build/
 cp -r "$PROJECT_ROOT/scripts" /root/qubic/
+cp "$PROJECT_ROOT/build.ps1" /root/qubic/qubic-efi-cross-build/
 
 echo -e "127.0.0.1\n$(hostname -I | awk '{print $1}')" > /root/qubic/qubic-efi-cross-build/peers.txt
 
@@ -109,7 +110,11 @@ server_ip=$(hostname -I | awk '{print $1}')
 sed -i 's|^\(\s*QUBIC_EVENTS_POOL_NODE_PASSCODES:\s*"\).*|\1'"$server_ip"':AAAAAAAAAAEAAAAAAAAAAgAAAAAAAAADAAAAAAAAAAQ="|' /root/qubic/qubic_docker/docker-compose.yaml
 sed -i "s/\"IP\"/\"$server_ip\"/" /root/qubic/qubic_docker/docker-compose.yaml
 
-# === Step 14: Set permissions ===
+# === Step 14: Frontend setu ===
+echo "Running frontend setup script..."
+bash "$PROJECT_ROOT/setup_frontend.sh"
+
+# === Step 15: Set permissions ===
 echo_info "Setting execution permissions..."
 chmod -R +x /root/qubic/
 

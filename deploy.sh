@@ -78,7 +78,7 @@ echo "Starting Docker container..."
 cd /root/qubic/qubic_docker || exit 1
 rm -r /root/qubic/qubic_docker/store
 rm -r /root/qubic/qubic_docker/mongo-data 
-script -qc "./run.sh --epoch $EPOCH_VALUE --vhd /root/qubic/qubic.vhd --port 31841 --memory 116243 --cpus 14 --efi /root/qubic/qubic-efi-cross-build/Qubic.efi" /dev/null &
+script -qc "./run.sh --epoch $EPOCH_VALUE --vhd /root/qubic/qubic.vhd --port 31841 --memory 60000 --cpus 10 --efi /root/qubic/qubic-efi-cross-build/Qubic.efi" /dev/null &
 
 sleep 2
 # Step 4: Run broadcaster script in background
@@ -108,6 +108,24 @@ echo "Deployment completed successfully."
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "RPC is available at: http://$IP:8000/v1/tick-info"
 echo "The Qubic Stats API: http://$IP:8000/v1/latest-stats"
+echo "Demo App: http://$IP:8088"
+echo "╔════════════════════════════════════════════════════════════════════════════╗"
+echo "║                  HOW TO CONNECT TO YOUR DEDICATED NODE                     ║"
+echo "╠════════════════════════════════════════════════════════════════════════════╣"
+echo "║                                                                           ║"
+echo "║  1. Open the Qubic application in your browser:                           ║"
+echo "║     » http://$IP:8088                                                     ║"
+echo "║                                                                           ║"
+echo "║  2. Click on the 'Connect' link at the top right corner                   ║"
+echo "║                                                                           ║"
+echo "║  3. Select 'Connect to Server' from the dropdown menu                     ║"
+echo "║                                                                           ║"
+echo "║  4. Enter your node URL:                                                  ║"
+echo "║     » http://$IP:8000                                   ║"
+echo "║                                                                           ║"
+echo "║  5. Click 'Connect' and refresh the page                                  ║"
+echo "║                                                                           ║"
+echo "╚════════════════════════════════════════════════════════════════════════════╝"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo "To connect to the testnet via qubic-cli, use:"
 echo "_______________________"
