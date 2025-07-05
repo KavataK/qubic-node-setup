@@ -9,6 +9,13 @@ fi
 
 GITHUB=$1
 
+# Check if any running Docker container was started with /entrypoint.sh
+if docker ps --format '{{.ID}} {{.Command}}' | grep -q '"/entrypoint.sh"'; then
+  echo "!!!!!Testnet is still running. Please stop and clean up the node using:"
+  echo "./cleanup.sh"
+  exit 1
+fi
+
 # Extract owner, repo, and branch from GitHub URL
 if [[ "$GITHUB" =~ https://github.com/([^/]+)/([^/]+)/tree/(.+) ]]; then
     OWNER="${BASH_REMATCH[1]}"
