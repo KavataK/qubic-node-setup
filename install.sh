@@ -9,10 +9,11 @@ echo_info() {
 
 PROJECT_ROOT="$(dirname "$(realpath "$0")")"
 
-# Update packages and install pip & gdown
+# Update packages and install required tools
 sudo apt update -y && \
-sudo apt install -y python3-pip unzip tree && \
+sudo apt install -y python3-pip unzip tree qemu-utils dosfstools && \
 pip3 install gdown
+
 
 # === Step 1: Create main project directory ===
 echo_info "Creating /root/qubic directory..."
@@ -26,12 +27,14 @@ echo_info "Extracting 32GBVHD.zip to /root/qubic (in background)..."
 unzip -o 32GBVHD.zip -d /root/qubic/ &
 bg_unzip_pid=$!
 
-# === Step 3: Download IPOSCHM25.zip and extract ===
-echo_info "Downloading IPOSCHM25.zip from Google Drive..."
-gdown --id 1-TC1O13e0InESqmkG-QGlyvCaT8fEsI6 --no-cookies --quiet
+# === Step 3: Download 172base.zip and extract ===
+echo_info "Downloading 172base.zip from Google Drive..."
+gdown --id 19QW0UlJ5qWqUuYAo0nmERi-ynmhCD_9z --no-cookies --quiet
 
 mkdir -p /root/qubic/filesForVHD
-unzip -o IPOSCHM25.zip -d /root/qubic/filesForVHD
+unzip -o 172base.zip -d /root/qubic/filesForVHD
+
+
 
 # === Step 4: Download and install libvpx7 ===
 echo_info "Downloading and installing libvpx7..."
@@ -102,7 +105,7 @@ cp "$PROJECT_ROOT/docker-compose.yaml" /root/qubic/qubic_docker/
 mkdir -p /root/qubic/qubic_docker/spectrumData/
 cp "$PROJECT_ROOT/qubic-stats-processor" /root/qubic/qubic_docker/spectrumData/
 cp "$PROJECT_ROOT/setupSpectrumData.sh" /root/qubic/qubic_docker/spectrumData/
-cp /root/qubic/filesForVHD/spectrum.158 /root/qubic/qubic_docker/spectrumData/
+cp /root/qubic/filesForVHD/spectrum.172 /root/qubic/qubic_docker/spectrumData/
 
 # === Step 13: Patch docker-compose.yaml with current IP ===
 echo_info "Updating docker-compose.yaml with server IP..."

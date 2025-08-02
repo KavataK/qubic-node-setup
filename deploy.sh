@@ -40,6 +40,10 @@ fi
 echo "Detected EPOCH: $EPOCH_VALUE"
 
 # Step 1: Prepare VHD
+sudo modprobe nbd max_part=8
+sudo qemu-nbd -c /dev/nbd0 -f vpc /root/qubic/qubic.vhd
+sudo fsck.vfat -a /dev/nbd0p1
+sudo qemu-nbd -d /dev/nbd0
 echo "Mounting VHD..."
 LOOP_DEVICE=$(sudo losetup -f --show --partscan /root/qubic/qubic.vhd)
 MOUNT_POINT="/mnt/qubic"

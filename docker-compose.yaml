@@ -64,7 +64,7 @@ services:
       - traefik
     restart: always
   qubic-archiver:
-    image: ghcr.io/qubic/qubic-archiver:v0.10.1
+    image: ghcr.io/qubic/qubic-archiver:v0.11.1
     container_name: qubic-archiver
     labels:
       # Traefik
@@ -158,7 +158,7 @@ services:
     networks:
       - traefik
   processor:
-    image: ghcr.io/qubic/qubic-stats-processor:hackathon-fix
+    image: ghcr.io/qubic/qubic-stats-processor:assets
     container_name: "stats-processor"
     environment:
       QUBIC_STATS_PROCESSOR_MONGO_USERNAME: "qubic"
@@ -174,7 +174,7 @@ services:
       - "host.docker.internal:host-gateway"
     restart: always
   stats-api:
-    image: ghcr.io/qubic/qubic-stats-api:hackathon-fix
+    image: ghcr.io/qubic/qubic-stats-api:assets
     container_name: "stats-api"
     environment:
       QUBIC_STATS_API_MONGO_USERNAME: "qubic"

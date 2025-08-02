@@ -9,7 +9,7 @@ fi
 epoch=$2
 
 # Rename spectrum file to the specified epoch
-cp "spectrum.158" "spectrum.$epoch"
+cp "spectrum.172" "spectrum.$epoch"
 
 # Parse the spectrum and upload relevant data to the database
 ./qubic-stats-processor --mongo-username qubic --mongo-password password --app-mode=spectrum_parser --spectrum-parser-spectrum-file="spectrum.$epoch"
