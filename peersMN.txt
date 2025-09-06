@@ -1,0 +1,3 @@
+# Specify your IP and public IPv4 addresses of the main network nodes here, one per line.
+# Get live peers from https://app.qubic.li/network/live
+

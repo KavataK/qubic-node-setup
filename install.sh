@@ -33,8 +33,6 @@ gdown --id 1I_ueVDhp1X5YNSQbW_4-XxyMLQ-dxINw --no-cookies --quiet
 mkdir -p /root/qubic/filesForVHD
 unzip -o 175base.zip -d /root/qubic/filesForVHD
 
-
-
 # === Step 4: Download and install libvpx7 ===
 echo_info "Downloading and installing libvpx7..."
 gdown --id 1q7loi8oFfKa-TSLuuMMGBjP2BYm-OxWH --no-cookies --quiet
@@ -92,12 +90,13 @@ make
 echo_info "Placing configuration files..."
 cp "$PROJECT_ROOT/config.yaml" /root/qubic/qubic-efi-cross-build/
 cp "$PROJECT_ROOT/seeds.txt" /root/qubic/qubic-efi-cross-build/
+cp "$PROJECT_ROOT/seedsMN.txt" /root/qubic/qubic-efi-cross-build/ || true
 cp -r "$PROJECT_ROOT/scripts" /root/qubic/
 cp "$PROJECT_ROOT/build.ps1" /root/qubic/qubic-efi-cross-build/
 cp "$PROJECT_ROOT/run_win_build.sh" /root/qubic/qubic-efi-cross-build/
-
+cp "$PROJECT_ROOT/configMN.yaml" /root/qubic/qubic-efi-cross-build/
 echo -e "127.0.0.1\n$(hostname -I | awk '{print $1}')" > /root/qubic/qubic-efi-cross-build/peers.txt
-
+cp "$PROJECT_ROOT/peersMN.txt" /root/qubic/qubic-efi-cross-build/
 cp "$PROJECT_ROOT/cleanup.sh" /root/qubic/qubic_docker/
 cp "$PROJECT_ROOT/deploy.sh" /root/qubic/qubic_docker/
 cp "$PROJECT_ROOT/qubic-cli" /root/qubic/qubic_docker/
@@ -107,6 +106,7 @@ mkdir -p /root/qubic/qubic_docker/spectrumData/
 cp "$PROJECT_ROOT/qubic-stats-processor" /root/qubic/qubic_docker/spectrumData/
 cp "$PROJECT_ROOT/setupSpectrumData.sh" /root/qubic/qubic_docker/spectrumData/
 cp /root/qubic/filesForVHD/spectrum.175 /root/qubic/qubic_docker/spectrumData/
+mkdir -p /root/qubic/filesForVHDMN
 
 # === Step 13: Patch docker-compose.yaml with current IP ===
 echo_info "Updating docker-compose.yaml with server IP..."

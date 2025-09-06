@@ -113,16 +113,26 @@ try {
         $OUTPUT_FILE_PATH = Join-Path -Path $originalDir -ChildPath "Qubic.efi"
     }
 
-    # Attempt to parse GITHUB_URL for <org>/<repo>/tree/<branch>
-    $repoRegex = '^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/tree\/(.+)$'
-    if ($GITHUB_URL -match $repoRegex) {
+    # Attempt to parse GITHUB_URL
+    # Supported formats:
+    #  1) https://github.com/<org>/<repo>/tree/<branch>
+    #  2) https://github.com/<org>/<repo>            (defaults to branch 'main')
+    $repoWithBranchRegex = '^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/tree\/(.+)$'
+    $repoOnlyRegex       = '^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/?$'
+    if ($GITHUB_URL -match $repoWithBranchRegex) {
         $org        = $Matches[1]
         $repo       = $Matches[2]
         $branchName = $Matches[3]
         $cloneUrl   = "https://github.com/$org/$repo.git"
     }
+    elseif ($GITHUB_URL -match $repoOnlyRegex) {
+        $org        = $Matches[1]
+        $repo       = $Matches[2]
+        $branchName = "main"
+        $cloneUrl   = "https://github.com/$org/$repo.git"
+    }
     else {
-        Write-Error "GITHUB_URL must be in the form https://github.com/<org>/<repo>/tree/<branch>"
+        Write-Error "GITHUB_URL must be either https://github.com/<org>/<repo>/tree/<branch> or https://github.com/<org>/<repo>"
         exit 1
     }
 

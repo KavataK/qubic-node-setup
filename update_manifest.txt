@@ -1,0 +1,22 @@
+# Syntax:
+#   file|<src_relative_to_repo_root>|<dst_absolute_path>|<mode_octal>
+#   dir|<dst_directory_absolute_path>
+
+# Ensure mainnet files directory exists
+dir|/root/qubic/filesForVHDMN
+
+# Core scripts and configs to update
+file|deploy.sh|/root/qubic/qubic_docker/deploy.sh|0755
+file|build.ps1|/root/qubic/qubic-efi-cross-build/build.ps1|0644
+file|run_win_build.sh|/root/qubic/qubic-efi-cross-build/run_win_build.sh|0755
+file|config.yaml|/root/qubic/qubic-efi-cross-build/config.yaml|0644
+file|configMN.yaml|/root/qubic/qubic-efi-cross-build/configMN.yaml|0644
+file|peersMN.txt|/root/qubic/qubic-efi-cross-build/peersMN.txt|0644
+file|seedsMN.txt|/root/qubic/qubic-efi-cross-build/seedsMN.txt|0644
+file|cleanup.sh|/root/qubic/qubic_docker/cleanup.sh|0755
+file|restart_network.sh|/root/qubic/qubic_docker/restart_network.sh|0755
+file|scripts/f9.py|/root/qubic/scripts/f9.py|0755
+file|scripts/network_monitor.py|/root/qubic/scripts/network_monitor.py|0755
+file|VERSION|/root/qubic/VERSION|0644
+
+
