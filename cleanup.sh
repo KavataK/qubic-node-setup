@@ -36,15 +36,29 @@ fi
 # Step 3: Kill the epoch_switcher.py process
 echo "Killing epoch_switcher.py process..."
 pkill -f epoch_switcher.py
-
-# Check if the process was killed
 if [ $? -eq 0 ]; then
     echo "epoch_switcher.py process killed successfully."
 else
     echo "Failed to kill epoch_switcher.py process or it was not running."
 fi
 
-# Step 4: Run docker-compose down in /root/qubic/qubic-docker/
+# Step 4: Kill processes with "node_ips {IP}"
+echo "Detecting system IP address..."
+CURRENT_IP=$(hostname -I | awk '{print $1}')
+if [ -n "$CURRENT_IP" ]; then
+    echo "System IP detected: $CURRENT_IP"
+    echo "Killing processes with node_ips $CURRENT_IP ..."
+    pkill -f "node_ips $CURRENT_IP"
+    if [ $? -eq 0 ]; then
+        echo "Processes with node_ips $CURRENT_IP killed successfully."
+    else
+        echo "No processes found with node_ips $CURRENT_IP or failed to kill."
+    fi
+else
+    echo "Failed to detect system IP. Skipping node_ips process cleanup."
+fi
+
+# Step 5: Run docker-compose down in /root/qubic/qubic-docker/
 echo "Running docker-compose down in /root/qubic/qubic-docker/..."
 if cd /root/qubic/qubic_docker/; then
     docker-compose down

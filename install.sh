@@ -27,12 +27,11 @@ echo_info "Extracting 32GBVHD.zip to /root/qubic (in background)..."
 unzip -o 32GBVHD.zip -d /root/qubic/ &
 bg_unzip_pid=$!
 
-# === Step 3: Download 172base.zip and extract ===
-echo_info "Downloading 172base.zip from Google Drive..."
-gdown --id 19QW0UlJ5qWqUuYAo0nmERi-ynmhCD_9z --no-cookies --quiet
-
+# === Step 3: Download 175base.zip and extract ===
+echo_info "Downloading 175base.zip from Google Drive..."
+gdown --id 1I_ueVDhp1X5YNSQbW_4-XxyMLQ-dxINw --no-cookies --quiet
 mkdir -p /root/qubic/filesForVHD
-unzip -o 172base.zip -d /root/qubic/filesForVHD
+unzip -o 175base.zip -d /root/qubic/filesForVHD
 
 
 
@@ -95,17 +94,19 @@ cp "$PROJECT_ROOT/config.yaml" /root/qubic/qubic-efi-cross-build/
 cp "$PROJECT_ROOT/seeds.txt" /root/qubic/qubic-efi-cross-build/
 cp -r "$PROJECT_ROOT/scripts" /root/qubic/
 cp "$PROJECT_ROOT/build.ps1" /root/qubic/qubic-efi-cross-build/
+cp "$PROJECT_ROOT/run_win_build.sh" /root/qubic/qubic-efi-cross-build/
 
 echo -e "127.0.0.1\n$(hostname -I | awk '{print $1}')" > /root/qubic/qubic-efi-cross-build/peers.txt
 
 cp "$PROJECT_ROOT/cleanup.sh" /root/qubic/qubic_docker/
 cp "$PROJECT_ROOT/deploy.sh" /root/qubic/qubic_docker/
 cp "$PROJECT_ROOT/qubic-cli" /root/qubic/qubic_docker/
+cp "$PROJECT_ROOT/restart_network.sh" /root/qubic/qubic_docker/
 cp "$PROJECT_ROOT/docker-compose.yaml" /root/qubic/qubic_docker/
 mkdir -p /root/qubic/qubic_docker/spectrumData/
 cp "$PROJECT_ROOT/qubic-stats-processor" /root/qubic/qubic_docker/spectrumData/
 cp "$PROJECT_ROOT/setupSpectrumData.sh" /root/qubic/qubic_docker/spectrumData/
-cp /root/qubic/filesForVHD/spectrum.172 /root/qubic/qubic_docker/spectrumData/
+cp /root/qubic/filesForVHD/spectrum.175 /root/qubic/qubic_docker/spectrumData/
 
 # === Step 13: Patch docker-compose.yaml with current IP ===
 echo_info "Updating docker-compose.yaml with server IP..."

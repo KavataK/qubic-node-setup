@@ -9,6 +9,21 @@ fi
 
 GITHUB=$1
 
+# Save GitHub link to file for network monitor (add to top of file)
+echo "Saving GitHub link to file..."
+CURRENT_DATE=$(date '+%Y-%m-%d %H:%M:%S')
+NEW_LINK_ENTRY="$CURRENT_DATE|$GITHUB"
+
+if [ -f "/root/qubic/github_link.txt" ]; then
+    # Create temporary file with new link at top
+    echo "$NEW_LINK_ENTRY" > /tmp/github_link_temp.txt
+    cat /root/qubic/github_link.txt >> /tmp/github_link_temp.txt
+    mv /tmp/github_link_temp.txt /root/qubic/github_link.txt
+else
+    echo "$NEW_LINK_ENTRY" > /root/qubic/github_link.txt
+fi
+echo "GitHub link saved: $GITHUB at $CURRENT_DATE"
+
 # Check if any running Docker container was started with /entrypoint.sh
 if docker ps --format '{{.ID}} {{.Command}}' | grep -q '"/entrypoint.sh"'; then
   echo "!!!!!Testnet is still running. Please stop and clean up the node using:"
@@ -75,7 +90,7 @@ echo "VHD prepared"
 # Step 2: Compile the Qubic.efi file 
 echo "Compiling Qubic.efi..."
 cd /root/qubic/qubic-efi-cross-build || exit 1
-./run_win_build.sh -h 46.17.97.73 -u Administrator -w QubicQubic1! -g $GITHUB -s seeds.txt -r peers.txt -m release -o . -c config.yaml | tee /root/qubic/qubic-efi-cross-build/build.log
+./run_win_build.sh -h 5.39.218.156 -u qubic -w qubic -g $GITHUB -s seeds.txt -r peers.txt -m release -o . -c config.yaml | tee /root/qubic/qubic-efi-cross-build/build.log
 
 # Wait until the build is completed successfully
 echo "Waiting for Qubic.efi compilation to complete..."
@@ -95,23 +110,32 @@ sleep 2
 # Step 4: Run broadcaster script in background
 echo "Waiting for the node to start up..."
 
+# Get the local IP address first
+export HOST_IP=$(hostname -I | awk '{print $1}')
+IP=$HOST_IP
+
+# Check if IP is valid
+if [ -z "$IP" ]; then
+    echo "Error: Could not determine local IP address"
+    exit 1
+fi
+echo "Using IP address: $IP"
+
 sleep 2
 cd /root/qubic/scripts/ || exit 1
 python3 broadcaster.py
 nohup python3 epoch_switcher.py > /root/qubic/scripts/epoch_switcher.log 2>&1 &
+nohup python3 network_monitor.py --node_ips $IP --node_port 31841 > /root/qubic/scripts/logs/network_monitor.log 2>&1 &
+nohup python3 f9.py --node_ips $IP --node_port 31841 > /root/qubic/scripts/logs/f9.log 2>&1 &
 
 # Step 5: Start Docker Compose services for qubic-http and qubic-nodes
 
 cd /root/qubic/qubic_docker/ || exit 1
-export HOST_IP=$(hostname -I | awk '{print $1}')
 echo "HOST_IP=$HOST_IP" > .env
 docker-compose up -d
 cd /root/qubic/qubic_docker/spectrumData || exit 1
 nohup ./setupSpectrumData.sh --epoch $EPOCH_VALUE > spectrum_setup.log 2>&1 &
 sleep 5
-
-# Get the local IP address
-IP=$HOST_IP
 
 # Display deployment info
 echo "======================================================================================================================="
