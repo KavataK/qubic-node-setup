@@ -3,7 +3,9 @@ src/public_settings.h:
     ADDON_TX_STATUS_REQUEST: 1
     START_NETWORK_FROM_SCRATCH: 1
     NUMBER_OF_SOLUTION_PROCESSORS: 1
-    MAX_NUMBER_OF_TICKS_PER_EPOCH: '(((((60 * 60 * 20 * 1) / (TARGET_TICK_DURATION / 1000)) + NUMBER_OF_COMPUTORS - 1) / NUMBER_OF_COMPUTORS) * NUMBER_OF_COMPUTORS)'
+    TARGET_TICK_DURATION: 12000
+    TRANSACTION_SPARSENESS: 16
+    MAX_NUMBER_OF_TICKS_PER_EPOCH: '(((((60 * 60 * 2 * 1) / (TARGET_TICK_DURATION / 1000)) + NUMBER_OF_COMPUTORS - 1) / NUMBER_OF_COMPUTORS) * NUMBER_OF_COMPUTORS)'
 src/private_settings.h:
   constants:
     # Logs
@@ -15,5 +17,6 @@ src/private_settings.h:
 src/qubic.cpp:
   constants:
     PORT: 21841
-
+  defines:
+    - NO_VBRIDGE
 

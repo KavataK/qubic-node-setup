@@ -2,7 +2,7 @@
 
 This repository contains an automated Bash script that installs all required dependencies and sets up the environment for running a Qubic node on a fresh Linux server.
 
-Current version: 1.0.0
+Current version: 1.0.1
 
 **Note:** The script uses files from epoch 172 of the mainnet, except for the spectrum file which is custom.
 > ⚠️ This version is optimized for testing and development. Not recommended for production environments.

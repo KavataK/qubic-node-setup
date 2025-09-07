@@ -258,6 +258,30 @@ try {
                 }
                 Set-Content $fullFilePath $fileContent
             }
+
+            # Handle 'defines' list to ensure certain defines are enabled (uncommented or inserted)
+            if ($configContent[$filePath].ContainsKey('defines')) {
+                Write-Host "Ensuring defines in $filePath"
+                $fileContent = Get-Content $fullFilePath -Raw
+                foreach ($defineName in $configContent[$filePath]['defines']) {
+                    if (-not [string]::IsNullOrWhiteSpace($defineName)) {
+                        $commentedPattern = "(?m)^\s*//\s*#define\s+$([regex]::Escape($defineName))\b.*$"
+                        $activePattern    = "(?m)^\s*#define\s+$([regex]::Escape($defineName))\b.*$"
+                        if ($fileContent -match $commentedPattern) {
+                            Write-Host "Uncommenting #define $defineName"
+                            $fileContent = [regex]::Replace($fileContent, $commentedPattern, "#define $defineName")
+                        }
+                        elseif ($fileContent -match $activePattern) {
+                            Write-Host "#define $defineName already active"
+                        }
+                        else {
+                            Write-Host "Inserting #define $defineName at top of file"
+                            $fileContent = "#define $defineName`r`n$fileContent"
+                        }
+                    }
+                }
+                Set-Content $fullFilePath $fileContent
+            }
         }
     } else {
         Write-Host "No config file provided. Skipping constant updates."
