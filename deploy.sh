@@ -177,8 +177,6 @@ else
 fi
 script -qc "./run.sh --epoch $EPOCH_VALUE --vhd /root/qubic/qubic.vhd --port $NODE_PORT --memory 60000 --cpus 10 --efi /root/qubic/qubic-efi-cross-build/Qubic.efi" /dev/null &
 
-sleep 2
-# Step 4: Optionally run testnet helper scripts
 echo "Waiting for the node to start up..."
 
 # Get the local IP address first
@@ -192,7 +190,9 @@ if [ -z "$IP" ]; then
 fi
 echo "Using IP address: $IP"
 
-sleep 2
+ sleep 20
+
+# Step 4: Optionally run testnet helper scripts
 if [ "$NETWORK_MODE" != "mainnet" ]; then
   cd /root/qubic/scripts/ || exit 1
   python3 broadcaster.py
@@ -206,12 +206,15 @@ fi
 
 # Mainnet: simplified final output and early exit
 if [ "$NETWORK_MODE" = "mainnet" ]; then
+  echo "======================================================================================================================="
   echo "Deployment completed successfully."
-  echo "Node startup takes ~2 minutes. You can check the node UI via:"
+  echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  echo "Node startup takes ~2 minutes. You can check the logs via:"
   echo "xfreerdp /v:127.0.0.1:5000 /u: /p: /cert:ignore /smart-sizing:640x480"
   echo "After initialization, check current system info:"
   cd /root/qubic/scripts || exit 1
   echo "./qubic-cli -nodeip $IP -nodeport 21841 -getsysteminfo"
+  echo "======================================================================================================================="
   exit 0
 fi
 

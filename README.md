@@ -110,7 +110,7 @@ cd qubic-node-setup
 sudo bash install.sh
 ```
 
-## 💰 Funded Seeds
+## 💰 Funded Seeds (for Testnet only)
 
 Seeds with funds:
 
