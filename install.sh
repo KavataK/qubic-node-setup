@@ -27,11 +27,11 @@ echo_info "Extracting 32GBVHD.zip to /root/qubic (in background)..."
 unzip -o 32GBVHD.zip -d /root/qubic/ &
 bg_unzip_pid=$!
 
-# === Step 3: Download 175base.zip and extract ===
-echo_info "Downloading 175base.zip from Google Drive..."
-gdown --id 1I_ueVDhp1X5YNSQbW_4-XxyMLQ-dxINw --no-cookies --quiet
+# === Step 3: Download base206.zip and extract ===
+echo_info "Downloading base206.zip from Google Drive..."
+gdown --id 1etZDX3dvn4f7Kh4IWhhfcahbM8heVHTV --no-cookies --quiet
 mkdir -p /root/qubic/filesForVHD
-unzip -o 175base.zip -d /root/qubic/filesForVHD
+unzip -o base206.zip -d /root/qubic/filesForVHD
 
 # === Step 4: Download and install libvpx7 ===
 echo_info "Downloading and installing libvpx7..."
